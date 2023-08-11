@@ -10,8 +10,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Post {
+  id        Int      @id @default(autoincrement())
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posts")
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  userId Int     @unique
+  user   User    @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
 model User {
   id      Int      @id @default(autoincrement())
   email   String   @unique
-  name    String
+  name    String?
+  posts   Post[]
+  profile Profile?
+
+  @@map("users")
 }
